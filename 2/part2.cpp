@@ -61,7 +61,7 @@ bool is_valid_sequence(const std::vector<int>& numbers) {
 int main() {
     try {
         // Import the input file
-        std::vector<std::string> input = import_input("input.txt");
+        std::vector<std::string> input = import_input("in.txt");
         if (input.empty()) {
             std::cerr << "Error: Input file is empty." << std::endl;
             return 1;

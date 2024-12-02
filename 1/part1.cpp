@@ -25,7 +25,7 @@ std::pair<int, int> split_string(std::string line) {
 
 
 int main() {
-    std::vector<std::string> input = import_input("input.txt");
+    std::vector<std::string> input = import_input("in.txt");
     std::vector<int> col1;
     std::vector<int> col2;
     for (std::string line : input) {
