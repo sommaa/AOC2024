@@ -1,8 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 // import the input file as a vector of strings
 std::vector<std::string> import_input(std::string filename) {
@@ -22,7 +22,6 @@ std::pair<int, int> split_string(std::string line) {
     int right = std::stoi(line.substr(pos + 1));
     return std::make_pair(left, right);
 }
-
 
 int main() {
     std::vector<std::string> input = import_input("in.txt");

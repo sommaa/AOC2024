@@ -1,13 +1,13 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
 #include <algorithm>
-#include <sstream>
 #include <cmath>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 // Import the input file as a vector of strings
-std::vector<std::string> import_input(const std::string& filename) {
+std::vector<std::string> import_input(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Error: Unable to open file " + filename);
@@ -24,7 +24,7 @@ std::vector<std::string> import_input(const std::string& filename) {
 }
 
 // Split the string into a vector of integers
-std::vector<int> split_string_to_numbers(const std::string& str) {
+std::vector<int> split_string_to_numbers(const std::string &str) {
     std::istringstream stream(str);
     std::vector<int> numbers;
     int num;
@@ -46,14 +46,15 @@ int main() {
         }
 
         int safe = 0;
-        for (const std::string& line : input) {
+        for (const std::string &line : input) {
             bool valid = true;
 
             // Split the string into a vector of numbers
             std::vector<int> numbers = split_string_to_numbers(line);
 
             // Skip if the line is empty
-            if (numbers.empty()) continue;
+            if (numbers.empty())
+                continue;
 
             // Check if the sequence is sorted or reverse sorted
             std::vector<int> sorted = numbers;
@@ -80,10 +81,9 @@ int main() {
             }
         }
         std::cout << "Safe sequences count: " << safe << std::endl;
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
     }
     return 0;
 }
-

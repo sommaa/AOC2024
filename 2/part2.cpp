@@ -1,13 +1,13 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
 #include <algorithm>
-#include <sstream>
 #include <cmath>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 // Import the input file as a vector of strings
-std::vector<std::string> import_input(const std::string& filename) {
+std::vector<std::string> import_input(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Error: Unable to open file " + filename);
@@ -24,7 +24,7 @@ std::vector<std::string> import_input(const std::string& filename) {
 }
 
 // Split the string into a vector of integers
-std::vector<int> split_string_to_numbers(const std::string& str) {
+std::vector<int> split_string_to_numbers(const std::string &str) {
     std::istringstream stream(str);
     std::vector<int> numbers;
     int num;
@@ -37,7 +37,7 @@ std::vector<int> split_string_to_numbers(const std::string& str) {
 }
 
 // Check if a sequence is valid
-bool is_valid_sequence(const std::vector<int>& numbers) {
+bool is_valid_sequence(const std::vector<int> &numbers) {
     // Check if the sequence is sorted or reverse sorted
     std::vector<int> sorted = numbers;
     std::sort(sorted.begin(), sorted.end());
@@ -69,7 +69,7 @@ int main() {
 
         int safe = 0;
         int count = 0;
-        for (const std::string& line : input) {
+        for (const std::string &line : input) {
             count++;
             // Split the string into numbers
             std::vector<int> numbers = split_string_to_numbers(line);
@@ -78,9 +78,9 @@ int main() {
             int dumperCounter = 0;
             if (is_valid_sequence(numbers)) {
                 safe++;
-                std::cout << count << std::endl;
-            } else{
-                // Check if removing one number at a time still keeps the sequence valid
+            } else {
+                // Check if removing one number at a time still keeps the
+                // sequence valid
                 for (size_t i = 0; i < numbers.size(); i++) {
                     std::vector<int> temp = numbers;
                     temp.erase(temp.begin() + i); // Remove the i-th number
@@ -92,16 +92,15 @@ int main() {
 
                 // If the sequence is valid, increment the safe counter
                 if (valid) {
-                    std:: cout << count << std::endl;
                     safe++;
-                }}
+                }
+            }
         }
 
-        //std::cout << "Safe sequences count: " << safe << std::endl;
-    } catch (const std::exception& e) {
+    std::cout << "Safe sequences count: " << safe << std::endl;
+    } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
     }
     return 0;
 }
-

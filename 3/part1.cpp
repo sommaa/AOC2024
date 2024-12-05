@@ -1,12 +1,12 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
 #include <cctype> // for isdigit
+#include <fstream>
+#include <iostream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 // Import the input file as a vector of strings
-std::vector<std::string> import_input(const std::string& filename) {
+std::vector<std::string> import_input(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Error: Unable to open file " + filename);
@@ -40,16 +40,9 @@ int main() {
             if (pos == std::string::npos) {
                 break; // Exit if no more matches are found
             }
-            positions.push_back(pos); // Store the position
+            positions.push_back(pos);    // Store the position
             start = pos + search.size(); // Move to the next search position
         }
-
-        // Print positions for debugging
-        std::cout << "Line " << i + 1 << " Positions: ";
-        for (int pos : positions) {
-            std::cout << pos << " ";
-        }
-        std::cout << std::endl;
 
         // Extract numbers and calculate the sum
         int sum = 0;
@@ -82,7 +75,8 @@ int main() {
 
             // Ensure valid numbers
             if (num1.empty() || num2.empty()) {
-                std::cerr << "Error: Invalid number format at line " << i + 1 << std::endl;
+                std::cerr << "Error: Invalid number format at line " << i + 1
+                          << std::endl;
                 continue;
             }
 
@@ -91,16 +85,10 @@ int main() {
             int n2 = std::stoi(num2);
             sum += n1 * n2;
 
-            // Print extracted numbers
-            std::cout << "Num1: " << n1 << ", Num2: " << n2 << ", Product: " << n1 * n2 << std::endl;
         }
-
-        // Print total sum for the line
-        std::cout << "Total Sum for Line " << i + 1 << ": " << sum << std::endl;
         total_sum += sum;
     }
     std::cout << "Total Sum: " << total_sum << std::endl;
 
     return 0;
 }
-
