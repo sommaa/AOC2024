@@ -115,10 +115,8 @@ int main() {
         bool enabled_slice;
 
         if (!enabled) {
-            // loop over the block2[i] from the end to the beginning 
             while (!enabled) {
                 for (int j = block2[i].size() - 1; j > 0; j--) {
-                    // while unordered, order 
                     // check if from position j to the end of the block2[i] is correct 
                     std::vector<int> sliced_copy(block2[i].begin() + j - 1, block2[i].end());
                     enabled_slice = valid(before, sliced_copy);
@@ -128,10 +126,8 @@ int main() {
                         std::swap(block2[i][j], block2[i][j - 1]);
                     }
                 }
-                // print the block2[i]   
-                     enabled = valid(before, block2[i]);
+                enabled = valid(before, block2[i]);
             }
-            // print the block2[i]
             sum += block2[i][block2[i].size() / 2];
         }
     }
