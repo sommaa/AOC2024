@@ -88,7 +88,7 @@ int main() {
                 // Handle don't() instruction
                 std::cout << "don't found" << std::endl;
                 mul_enabled = false;
-                pos += 6;
+                pos += 7;
             } else {
                 // Skip unrecognized characters
                 pos++;
