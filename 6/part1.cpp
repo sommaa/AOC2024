@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iostream>
-#include <omp.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -90,7 +89,6 @@ int main() {
 
     // Sum the visited matrix
     int sum = 0;
-    #pragma omp parallel for reduction(+ : sum)
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             sum += visited[i][j];

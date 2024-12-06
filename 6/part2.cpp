@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iostream>
-#include <omp.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -112,20 +111,20 @@ int main() {
 
     // brute force # wall new position
     int possible_stuck = 0;
-    // parallelize the loop
-    #pragma omp parallel for
-    for (int i = 0; i < rows; i++) {
-        #pragma omp parallel for
-        for (int j = 0; j < cols; j++) {
-            if (input[i][j] == '.') {
-                // make a copy of the input
-                std::vector<std::vector<char>> input_copy = input;
-                // change the position of the wall
-                input_copy[i][j] = '#';
-                if (stuck_loop(input_copy, start_i, start_j, visited)) {
-                    possible_stuck++;
-                }
+    for (int idx = 0; idx < rows * cols; idx++) {
+        int i = idx / cols;
+        int j = idx % cols;
+    
+        if (input[i][j] == '.') {
+            std::vector<std::vector<int>> visited(rows, std::vector<int>(cols, 0));
+            
+            input[i][j] = '#';
+    
+            if (stuck_loop(input, start_i, start_j, visited)) {
+                possible_stuck++;
             }
+    
+            input[i][j] = '.'; // Revert the wall
         }
     }
     std::cout << "Total possible walls: " << possible_stuck << std::endl;
