@@ -1,28 +1,28 @@
 #include <algorithm>
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
+
+struct pair_hash {
+    std::size_t operator()(const std::pair<int, int> &p) const {
+        return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+    }
+};
 
 class robot_puzzle {
   private:
-    std::vector<std::pair<int, int>> walls;
+    std::unordered_set<std::pair<int, int>, pair_hash> walls;
     std::vector<std::pair<int, int>> boxes;
     std::pair<int, int> robot_pos;
     std::string directions;
     int rows;
     int cols;
 
-    bool would_hit_wall(int cr, int cc) {
-        for (const auto &wall : walls) {
-            if (cr == wall.first && cc == wall.second) {
-                return true;
-            }
-        }
-        return false;
+    bool would_hit_wall(int cr, int cc) const {
+        return walls.count({cr, cc}) > 0;
     }
 
     void try_to_move(int dy, int dx) {
@@ -35,8 +35,7 @@ class robot_puzzle {
 
         std::pair<int, int> *box_in_way = nullptr;
         for (auto &box : boxes) {
-            if (new_y == box.first && new_x - box.second >= 0 &&
-                new_x - box.second <= 1) {
+            if (box.first == new_y && box.second == new_x) {
                 box_in_way = &box;
                 break;
             }
@@ -60,8 +59,10 @@ class robot_puzzle {
                 continue;
             }
 
-            if (would_hit_wall(box->first + dy, box->second + dx) ||
-                would_hit_wall(box->first + dy, box->second + dx + 1)) {
+            int next_y = box->first + dy;
+            int next_x = box->second + dx;
+
+            if (would_hit_wall(next_y, next_x)) {
                 boxes_can_move = false;
                 break;
             }
@@ -69,13 +70,10 @@ class robot_puzzle {
             boxes_to_move.push_back(box);
 
             for (auto &other_box : boxes) {
-                if (std::find(boxes_to_move.begin(), boxes_to_move.end(),
-                              &other_box) != boxes_to_move.end()) {
+                if (&other_box == box) {
                     continue;
                 }
-                if (box->first + dy == other_box.first &&
-                    other_box.second - (box->second + dx) >= -1 &&
-                    other_box.second - (box->second + dx) <= 1) {
+                if (other_box.first == next_y && other_box.second == next_x) {
                     boxes_to_examine.push_back(&other_box);
                 }
             }
@@ -93,52 +91,62 @@ class robot_puzzle {
   public:
     void readFile(const std::string &filename) {
         std::ifstream file(filename);
+        if (!file) {
+            std::cerr << "Error opening file: " << filename << '\n';
+            return;
+        }
+
         std::string line;
         bool found_blank_line = false;
         int r = 0;
 
         while (std::getline(file, line)) {
-            if (r == 0) {
-                cols = line.size();
-            }
             if (line.empty()) {
                 found_blank_line = true;
                 rows = r;
                 continue;
             }
+
             if (found_blank_line) {
                 directions += line;
                 continue;
             }
-            for (int c = 0; c < cols; ++c) {
-                if (line[c] == '@') {
-                    robot_pos = {r, c * 2};
-                } else if (line[c] == '#') {
-                    walls.emplace_back(r, c * 2);
-                    walls.emplace_back(r, c * 2 + 1);
-                } else if (line[c] == 'O') {
-                    boxes.emplace_back(r, c * 2);
+
+            if (r == 0) {
+                cols = static_cast<int>(line.size()) * 2;
+            }
+
+            for (size_t c = 0; c < line.size(); ++c) {
+                char ch = line[c];
+                int pos_c = static_cast<int>(c) * 2;
+                if (ch == '@') {
+                    robot_pos = {r, pos_c};
+                } else if (ch == '#') {
+                    walls.emplace(r, pos_c);
+                    walls.emplace(r, pos_c + 1);
+                } else if (ch == 'O') {
+                    boxes.emplace_back(r, pos_c);
                 }
             }
-            r += 1;
+            ++r;
         }
+        rows = r;
     }
 
     void simulate_moves() {
-        std::unordered_map<char, std::pair<int, int>> direction_map = {
+        const std::unordered_map<char, std::pair<int, int>> direction_map = {
             {'^', {-1, 0}}, {'v', {1, 0}}, {'<', {0, -1}}, {'>', {0, 1}}};
 
         for (char direction : directions) {
-            int dy = 0, dx = 0;
-            if (direction_map.count(direction)) {
-                dy = direction_map[direction].first;
-                dx = direction_map[direction].second;
+            auto it = direction_map.find(direction);
+            if (it != direction_map.end()) {
+                const auto &[dy, dx] = it->second;
                 try_to_move(dy, dx);
             }
         }
     }
 
-    int calculate_total() {
+    int calculate_total() const {
         int total = 0;
         for (const auto &box : boxes) {
             total += 100 * box.first + box.second;
