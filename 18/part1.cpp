@@ -8,6 +8,8 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 // read a file that contains num,num\n
 std::vector<std::pair<int, int>> read_file(const std::string &filename) {
@@ -34,15 +36,17 @@ void display_bfs(const std::vector<std::vector<std::string>> &grid, int rows,
     std::cout << "\033[0;0H";
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            if (q.front() == std::make_tuple(0, i, j)) {
-                // blue dot symbol
-                std::cout << "\033[1;34m.\033[0m";
+            // print the queue
+            if (!q.empty() && std::get<1>(q.front()) == i &&
+                std::get<2>(q.front()) == j) {
+                // blue square symbol
+                std::cout << "\033[1;34m\033[0m";
             } else if (seen.find({i, j}) != seen.end()) {
                 // red dot symbol
-                std::cout << "\033[1;31m.\033[0m";
+                std::cout << "\033[1;31m\033[0m";
             } else if (grid[i][j] == "#") {
                 // grey full square symbol
-                std::cout << "\033[1;30m#\033[0m";
+                std::cout << "\033[1;30m󰝤\033[0m";
             } else {
                 std::cout << " ";
             }
@@ -50,6 +54,7 @@ void display_bfs(const std::vector<std::vector<std::string>> &grid, int rows,
         std::cout << std::endl;
     }
     std::cout << std::flush;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 }
 
 int main() {
