@@ -94,24 +94,17 @@ int main() {
     std::vector<int> start_end = find_start_end(maze);
 
     int steps = bfs(maze, start_end, rows, cols);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            std::cout << dist[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
     int result = 0;
+    int radius_amp = 20;
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            if (maze[i][j] == '#') {
-                continue;
-            }
-            for (int radius = 2; radius < 21; radius++) {
+            if (maze[i][j] == '#') { continue; }
+            for (int radius = 2; radius < radius_amp + 1; radius++) {
                 for (int dr = 0; dr < radius + 1; dr++) {
                     int dc = radius - dr;
 
-                    std::vector<std::pair<int, int>> dir_skip = {
+                    std::set<std::pair<int, int>> dir_skip = {
                         {i + dr, j + dc},
                         {i + dr, j - dc},
                         {i - dr, j + dc},
@@ -121,9 +114,7 @@ int main() {
                         int nx = dir.first;
                         int ny = dir.second;
                         if (nx < 0 || nx >= rows || ny < 0 || ny >= cols ||
-                            maze[nx][ny] == '#') {
-                            continue;
-                        }
+                            maze[nx][ny] == '#') { continue; }
                         if (dist[i][j] - dist[nx][ny] >= 100 + radius) {
                             result++;
                         }
