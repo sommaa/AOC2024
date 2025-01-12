@@ -8,16 +8,6 @@ std::vector<std::vector<std::string>> import_blocks() {
     return blocks;
 }
 
-size_t hash_vector(const std::vector<std::string> &v) {
-    size_t hash = 0;
-    for (const auto &s : v) {
-        for (char c : s) {
-            hash = hash * 0x100000001b3 + c;
-        }
-    }
-    return hash;
-}
-
 int find_reflection(std::vector<std::string> block, bool transpose = false) {
     if (transpose) {
         std::vector<std::string> transposed(block[0].size(), std::string(block.size(), ' '));
@@ -34,7 +24,7 @@ int find_reflection(std::vector<std::string> block, bool transpose = false) {
         std::vector<std::string> top(block.begin() + i - max_size, block.begin() + i);
         std::vector<std::string> bottom(block.begin() + i, block.begin() + i + max_size);
         std::reverse(bottom.begin(), bottom.end());
-        if (hash_vector(top) == hash_vector(bottom)) return i;
+        if (top == bottom) return i;
     }
     return 0;
 }
